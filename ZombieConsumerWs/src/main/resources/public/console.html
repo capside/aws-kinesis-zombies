@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicio de vigilancia zombie :: test</title>
+</head>
+<body>
+   
+   
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>    
+
+    
+        <script>
+		$(document).ready(function() {
+                    // defined a connection to a new socket endpoint
+                    var socket = new SockJS('/stomp');
+                    var stompClient = Stomp.over(socket);
+                    stompClient.connect({ }, function(frame) {
+                    stompClient.subscribe("/topic/zombies", function(data) {
+                            var message = data.body;
+                            console.log(message);
+                        });
+                    });
+                });
+	</script>    
+    
+</body>
+</html>

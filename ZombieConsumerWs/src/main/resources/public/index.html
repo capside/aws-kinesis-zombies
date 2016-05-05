@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicio de vigilancia zombie</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+
+    <style>
+        html, body {
+            border: 0;
+            padding: 0;
+            margin : 0;
+        }
+        
+        #map { 
+            width: 100%; 
+            height: 100vh; 
+            background-color : orange;
+        }
+    </style>
+</head>
+<body>
+   
+    <div id="map"></div>
+   
+    
+    <script src="//cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="leaflet-heat.js"></script>
+    <script
+        src="//code.jquery.com/jquery-2.2.2.min.js"
+        integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="
+        crossorigin="anonymous"></script>    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.0/sockjs.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>    
+    
+    <script>
+        var map = L.map('map').setView([40.415363, -3.707398], 6);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            maxZoom: 20,
+            id: 'ciberado.phdobb5a',
+            accessToken: 'pk.eyJ1IjoiY2liZXJhZG8iLCJhIjoiUkxsN0pyWSJ9.G5ar46-sYQ6D313k7Og8eQ#3/0.00/0.00'
+        }).addTo(map);
+        
+
+        var heat = L.heatLayer([], {radius: 25}).addTo(map);
+        
+        var pointsRegistered = 0;
+        function registerNewZombieLecture(lecture) {
+            heat.addLatLng([lecture.latitude, lecture.longitude, lecture.zombies]);
+            pointsRegistered = pointsRegistered+1;
+        }
+        
+        
+
+        $(document).ready(function() {
+            // defined a connection to a new socket endpoint
+            var socket = new SockJS('/stomp');
+            var stompClient = Stomp.over(socket);
+            stompClient.connect({ }, function(frame) {
+                stompClient.subscribe("/topic/zombies", function(data) {
+                    var message = data.body;
+                    var zombieLecture = JSON.parse(message);
+                    registerNewZombieLecture(zombieLecture);
+                });
+            });
+        });
+    
+    
+    </script>
+    
+</body>
+</html>
