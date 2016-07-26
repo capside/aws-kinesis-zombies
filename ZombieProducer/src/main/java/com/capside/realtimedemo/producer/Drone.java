@@ -34,6 +34,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * Aditional documentation: https://blogs.aws.amazon.com/bigdata/post/Tx3ET30EGDKUUI2/Implementing-Efficient-and-Reliable-Producers-with-the-Amazon-Kinesis-Producer-L
+ * 
+ * @author ciberado
+ */
 @Component
 @Slf4j
 public class Drone implements CommandLineRunner {
@@ -55,6 +60,7 @@ public class Drone implements CommandLineRunner {
     private final double longitude;
     private final List<Zombie> zombies = new ArrayList<>();
     
+    private final RecordSentCallback recordSentCallback;
 
     /**
      * The sequence number of the next record.
@@ -83,6 +89,7 @@ public class Drone implements CommandLineRunner {
         this.longitude = longitude;
         this.currentRecordNumber = new AtomicLong(0);
         this.recordsCompleted = new AtomicLong(0);
+        this.recordSentCallback  = new RecordSentCallback();
     }
 
     @SneakyThrows
@@ -94,6 +101,11 @@ public class Drone implements CommandLineRunner {
             long t0 = System.currentTimeMillis();
             for (Zombie zombie : zombies) {
                 zombie.move();
+            }
+            while (producer.getOutstandingRecordsCount() > NUMBER_OF_ZOMBIES * 3) {
+                log.warn(format("Kinesis is under pressure (count=%s). Waiting 1 second.", 
+                        producer.getOutstandingRecordsCount()));
+                Thread.sleep(1000);
             }
             sendZombiesToKinesis();
             long tf = System.currentTimeMillis();
@@ -157,7 +169,7 @@ public class Drone implements CommandLineRunner {
 
         @Override
         public void onFailure(Throwable t) {
-            if (t instanceof UserRecordFailedException) {
+            if (t instanceof UserRecordFailedException ){
                 Attempt last = Iterables.getLast(
                         ((UserRecordFailedException) t).getResult().getAttempts());
                 log.error(format(
@@ -189,7 +201,7 @@ public class Drone implements CommandLineRunner {
         ByteBuffer data = ByteBuffer.wrap(json.getBytes("UTF-8"));
         ListenableFuture<UserRecordResult> f
                 = producer.addUserRecord(streamName, partitionKey, data);
-        Futures.addCallback(f, new RecordSentCallback());
+        Futures.addCallback(f, this.recordSentCallback);
     }
 
 
