@@ -20,14 +20,14 @@ import lombok.Setter;
 public class Zombie {
     private static final int SECONDS_WALKING_IN_THE_SAME_DIRECTION = 60*3;
     
-    private int id;
+    private String id;
     private CoordinateUTM currentPosition;
     private CoordinateUTM destination;
     /** speed in meters per second */
     private double speed;
     private double angle;
     
-    public Zombie(int id, CoordinateUTM originalPosition, double speed) {
+    public Zombie(String id, CoordinateUTM originalPosition, double speed) {
         this.id = id;
         this.currentPosition = new CoordinateUTM(originalPosition);
         this.destination = new CoordinateUTM(originalPosition);

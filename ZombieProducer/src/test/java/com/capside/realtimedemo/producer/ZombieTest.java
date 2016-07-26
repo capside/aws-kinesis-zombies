@@ -23,7 +23,7 @@ public class ZombieTest {
     @Test
     public void testMovement() {
         CoordinateUTM origin = new CoordinateUTM(31, 500_000, 4_580_000, 1, Datum.WGS84);
-        Zombie zombie = new Zombie(0, origin, 10);
+        Zombie zombie = new Zombie("", origin, 10);
         zombie.move();
         
         Assert.assertEquals("Our zombie ran the right number of meters", 
