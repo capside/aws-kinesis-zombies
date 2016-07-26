@@ -19,7 +19,7 @@ import org.springframework.messaging.MessagingException;
  * @author ciberado
  */
 @Slf4j
-class ZombieRecordProcessor implements IRecordProcessor {
+abstract class ZombieRecordProcessor implements IRecordProcessor {
 
     private final ObjectMapper mapper;
     private int processedRecords;
@@ -60,9 +60,7 @@ class ZombieRecordProcessor implements IRecordProcessor {
         }
     }
 
-    private void processZombieLecture(ZombieLecture lecture) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    abstract void processZombieLecture(ZombieLecture lecture);
 
     @Override
     @SneakyThrows

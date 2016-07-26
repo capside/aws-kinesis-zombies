@@ -2,7 +2,6 @@ package com.capside.realtimedemo.consumer;
 
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.IRecordProcessor;
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.IRecordProcessorFactory;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.InitialPositionInStream;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.KinesisClientLibConfiguration;
@@ -23,12 +22,16 @@ public class Consumer  {
     private final String streamName;
     
     private final String region;
-            
+
+    private final IRecordProcessorFactory zombieRecordFactory;
+    
     @Autowired
     public Consumer(@Value("${stream}") String streamName, 
-                    @Value("${region}") String region) {
+                    @Value("${region}") String region,
+                    IRecordProcessorFactory zombieRecordFactory) {
         this.streamName = streamName;
         this.region = region;
+        this.zombieRecordFactory = zombieRecordFactory;
     }
     
     @PostConstruct
@@ -62,18 +65,12 @@ public class Consumer  {
                 .withInitialPositionInStream(InitialPositionInStream.TRIM_HORIZON);
 
         new Worker.Builder()
-                .recordProcessorFactory(new RecordProcessorFactory())
+                .recordProcessorFactory(zombieRecordFactory)
                 .config(config)
                 .build()
                 .run();
     }
 
 
-    private class RecordProcessorFactory implements IRecordProcessorFactory {
-        @Override
-        public IRecordProcessor createProcessor() {
-            return new ZombieRecordProcessor();
-        }
-    }
 
 }
