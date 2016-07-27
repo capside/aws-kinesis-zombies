@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class ZombieRecordProcessorOnMemoryFactory implements IRecordProcessorFactory {
+public class ZombieRecordProcessorFactoryOnMemory implements IRecordProcessorFactory {
     
     private final Set<ZombieLecture> lectures = new HashSet<>();
     

@@ -18,7 +18,6 @@ public class ZombieRecordProcessorOnMemory extends ZombieRecordProcessor {
 
     @Override
     void processZombieLecture(ZombieLecture lecture) {
-        String msg = format("%s;%s;%s\r\n", lecture.getZombieId(), lecture.getLatitude(), lecture.getLongitude());
         lectures.add(lecture);
     }
 
