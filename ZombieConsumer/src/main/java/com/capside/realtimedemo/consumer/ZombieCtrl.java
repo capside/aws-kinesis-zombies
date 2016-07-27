@@ -30,7 +30,7 @@ public class ZombieCtrl {
     public void sendZombies() {
         for (ZombieLecture lecture : lectureSource.getLectures()) {
             String msg = format("%s;%s;%s;%s\r\n", lecture.getTimestamp(), lecture.getZombieId(), lecture.getLatitude(), lecture.getLongitude());            
-            log.debug("Sending message %s.", msg);
+            log.debug("Sending message {}.", msg);
             smt.convertAndSend("/topic/zombies", msg);
         }
     }

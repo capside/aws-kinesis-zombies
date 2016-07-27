@@ -20,7 +20,7 @@ public class ZombieRecordProcessorOnMemory extends ZombieRecordProcessor {
     @Override
     void processZombieLecture(ZombieLecture lecture) {
         String msg = format("%s;%s;%s;%s\r\n", lecture.getTimestamp(), lecture.getZombieId(), lecture.getLatitude(), lecture.getLongitude());            
-        log.debug("Storing new lecture %s.", msg);
+        log.debug("Storing new lecture {}.", msg);
         if (lectures.contains(lecture)) lectures.remove(lecture);
         lectures.add(lecture);
     }

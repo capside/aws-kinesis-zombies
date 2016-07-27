@@ -43,10 +43,10 @@ import static java.lang.String.format;
 @Slf4j
 public class Drone implements CommandLineRunner {
 
-    public static final int NUMBER_OF_ZOMBIES = 1;
+    public static final int NUMBER_OF_ZOMBIES = 1000;
     public static final double ZOMBIE_SPEED = 1;
     public static final double RADIOUS = 3 * 1000;
-    public static final int MAX_OUTSTANDING = 10000;
+    public static final int MAX_OUTSTANDING = 2000;
 
     private final ObjectMapper mapper;
 
@@ -116,7 +116,8 @@ public class Drone implements CommandLineRunner {
     }
 
     /**
-     *
+     * All what you need: 
+     * https://github.com/awslabs/amazon-kinesis-producer/blob/master/java/amazon-kinesis-producer/src/main/java/com/amazonaws/services/kinesis/producer/KinesisProducerConfiguration.java
      * @return KinesisProducer instance used to put records.
      */
     public KinesisProducer createKinesisProducer() {
@@ -124,10 +125,10 @@ public class Drone implements CommandLineRunner {
 
         config.setRegion(region);
         config.setCredentialsProvider(new DefaultAWSCredentialsProviderChain());
-        config.setMaxConnections(4);
-        config.setRequestTimeout(60000);
-        config.setAggregationEnabled(true);
-        config.setAggregationMaxCount(2);
+        config.setMaxConnections(24);           // Raise it if you have expired records
+        config.setRequestTimeout(60000);        
+        config.setAggregationEnabled(true); 
+        config.setAggregationMaxCount(2);       // Usually a higher value is far more efficent
         config.setAggregationMaxSize(1024*100);
         config.setRecordMaxBufferedTime(5000);
         producer = new KinesisProducer(config);
@@ -156,7 +157,7 @@ public class Drone implements CommandLineRunner {
             double dx = distance * cos(angle);
             double dy = distance * sin(angle);
             utm.translate(dx, dy);
-            Zombie zombie = new Zombie(id + "-" + i, utm, ZOMBIE_SPEED * 0.8 + ZOMBIE_SPEED * 0.2);
+            Zombie zombie = new Zombie(id + "-" + i, utm, ZOMBIE_SPEED * 0.5 * (1+Math.random()));
             zombies.add(zombie);
         }
     }
