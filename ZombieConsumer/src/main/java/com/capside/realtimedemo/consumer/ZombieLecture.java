@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  *
  * @author ciberado
  */
-@Data @AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor 
+@EqualsAndHashCode(of = {"droneId", "zombieId"}) @ToString
 public class ZombieLecture {
     
     @JsonProperty("drone-id")
