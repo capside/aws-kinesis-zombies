@@ -41,7 +41,7 @@ abstract class ZombieRecordProcessor implements IRecordProcessor {
         List<Record> records = processRecordsInput.getRecords();
         // Utilizado para actualizar el último registro procesado
         IRecordProcessorCheckpointer checkpointer = processRecordsInput.getCheckpointer();
-        log.info("Iniciando envío de registros.");
+        log.info("Recuperando registros desde kinesis.");
         for (Record r : records) {
             try {
                 int len = r.getData().remaining();
@@ -53,7 +53,7 @@ abstract class ZombieRecordProcessor implements IRecordProcessor {
                 log.debug(processedRecords++ + ": " + json);
                 if (processedRecords % 1000 == 999) {
                     // Uncomment next line to keep track of the processed lectures. 
-                    // checkpointer.checkpoint();
+                    //checkpointer.checkpoint();
                 }
             } catch (UnsupportedEncodingException | MessagingException ex) {
                 log.warn(ex.getMessage());

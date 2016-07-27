@@ -5,7 +5,9 @@
  */
 package com.capside.realtimedemo.producer;
 
+import com.capside.realtimedemo.geo.CoordinateLatLon;
 import com.capside.realtimedemo.geo.CoordinateUTM;
+import com.capside.realtimedemo.geo.Datum;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -58,7 +60,21 @@ public class Zombie {
         double sy = speed * sin(angle) * seconds;
         utm.translate(sx, sy);
     }
-
     
+
+    /* Quick test. *
+    public static void main(String[] args) {
+        CoordinateUTM origin = new CoordinateUTM(31, 500_000, 4_580_000, 1, Datum.WGS84);
+        Zombie zombie = new Zombie("", origin, 10);
+        zombie.move();
+        for (int i=0; i<100; i++) {
+            CoordinateLatLon latLon= Datum.WGS84.utmToLatLon(zombie.getCurrentPosition());
+            System.out.println(i + "," + latLon.getLat() + "," + latLon.getLon());
+            zombie.move();
+        }
+            
+        
+    }    
+    */
     
 }

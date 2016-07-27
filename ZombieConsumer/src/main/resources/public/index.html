@@ -44,26 +44,43 @@
         
 
         var heat = L.heatLayer([], {radius: 25}).addTo(map);
-        
-        var pointsRegistered = 0;
-        function registerNewZombieLecture(lecture) {
-            heat.addLatLng([lecture.latitude, lecture.longitude, lecture.zombies]);
-            pointsRegistered = pointsRegistered+1;
-        }
+        var lectures = {};
         
         
-
-        $(document).ready(function() {
+        function connect() {
             // defined a connection to a new socket endpoint
             var socket = new SockJS('/stomp');
             var stompClient = Stomp.over(socket);
+            stompClient.debug = function(data) {
+                var msg = data.substring(data.lastIndexOf('\n\n')).trim();
+                console.log(msg);
+            };
+            
             stompClient.connect({ }, function(frame) {
                 stompClient.subscribe("/topic/zombies", function(data) {
                     var message = data.body;
-                    var zombieLecture = JSON.parse(message);
-                    registerNewZombieLecture(zombieLecture);
+                    var zombieLecture = message.split(';');
+                    var lectureObject = 
+                            { id: zombieLecture[1], 
+                              latitude : zombieLecture[2], 
+                              longitude : zombieLecture[3]};
+                    lectures[lectureObject.id] = lectureObject;
                 });
             });
+        }
+
+        function drawLectures() {
+            var points = [];
+            for (var key in lectures) {
+                var lecture = lectures[key];
+                points.push([lecture.latitude, lecture.longitude, 1]);
+            }
+            heat.setLatLngs(points);
+        }
+        
+        $(document).ready(function() {
+            connect();
+            window.setInterval(drawLectures, 1000*1);
         });
     
     

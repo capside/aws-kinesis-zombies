@@ -23,7 +23,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static java.lang.String.format;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,8 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import static java.lang.String.format;
-import static java.lang.String.format;
 import static java.lang.String.format;
 
 /**
@@ -46,11 +43,10 @@ import static java.lang.String.format;
 @Slf4j
 public class Drone implements CommandLineRunner {
 
-    private static final int SECONDS_TO_RUN = 60 * 60;
-
-    public static final int NUMBER_OF_ZOMBIES = 1000;
+    public static final int NUMBER_OF_ZOMBIES = 1;
     public static final double ZOMBIE_SPEED = 1;
-    public static final double RADIOUS = 10 * 1000;
+    public static final double RADIOUS = 3 * 1000;
+    public static final int MAX_OUTSTANDING = 10000;
 
     private final ObjectMapper mapper;
 
@@ -105,7 +101,7 @@ public class Drone implements CommandLineRunner {
             for (Zombie zombie : zombies) {
                 zombie.move();
             }
-            while (producer.getOutstandingRecordsCount() > NUMBER_OF_ZOMBIES * 3) {
+            while (producer.getOutstandingRecordsCount() > MAX_OUTSTANDING) {
                 log.warn(format("Kinesis KPL is under pressure (count=%s). Waiting 1 second.", 
                         producer.getOutstandingRecordsCount()));
                 Thread.sleep(1000);
@@ -130,7 +126,10 @@ public class Drone implements CommandLineRunner {
         config.setCredentialsProvider(new DefaultAWSCredentialsProviderChain());
         config.setMaxConnections(4);
         config.setRequestTimeout(60000);
-        config.setRecordMaxBufferedTime(15000);
+        config.setAggregationEnabled(true);
+        config.setAggregationMaxCount(2);
+        config.setAggregationMaxSize(1024*100);
+        config.setRecordMaxBufferedTime(5000);
         producer = new KinesisProducer(config);
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -153,8 +152,9 @@ public class Drone implements CommandLineRunner {
         for (int i=0; i < NUMBER_OF_ZOMBIES; i++) {
             CoordinateUTM utm = Datum.WGS84.latLonToUTM(latitude, longitude, -1);
             double angle = 2 * PI * Math.random();
-            double dx = radious * cos(angle);
-            double dy = radious * sin(angle);
+            double distance = radious * Math.random();
+            double dx = distance * cos(angle);
+            double dy = distance * sin(angle);
             utm.translate(dx, dy);
             Zombie zombie = new Zombie(id + "-" + i, utm, ZOMBIE_SPEED * 0.8 + ZOMBIE_SPEED * 0.2);
             zombies.add(zombie);
