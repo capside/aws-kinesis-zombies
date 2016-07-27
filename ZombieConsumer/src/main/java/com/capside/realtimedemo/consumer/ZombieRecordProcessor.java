@@ -52,7 +52,8 @@ abstract class ZombieRecordProcessor implements IRecordProcessor {
                 this.processZombieLecture(lecture);
                 log.debug(processedRecords++ + ": " + json);
                 if (processedRecords % 1000 == 999) {
-                    checkpointer.checkpoint();
+                    // Uncomment next line to keep track of the processed lectures. 
+                    // checkpointer.checkpoint();
                 }
             } catch (UnsupportedEncodingException | MessagingException ex) {
                 log.warn(ex.getMessage());

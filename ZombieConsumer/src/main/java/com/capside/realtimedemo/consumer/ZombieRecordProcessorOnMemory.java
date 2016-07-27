@@ -1,8 +1,6 @@
 package com.capside.realtimedemo.consumer;
 
-import java.util.HashSet;
 import java.util.Set;
-import static java.lang.String.format;
 
 /**
  *
