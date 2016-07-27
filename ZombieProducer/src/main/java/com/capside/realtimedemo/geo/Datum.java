@@ -10,7 +10,7 @@ public class Datum {
     public static final Datum WGS84 = new Datum("WGS84", 6378137.000, 6356752.314);
     public static final Datum ED50  = new Datum("ED50", 6378388.000, 6356911.946);
 
-    public static final Datum[] enumeration = {WGS84, ED50};
+    public static final Datum[] DATUMS = {WGS84, ED50};
 
     private final String name;
     private final double equatorialRadius;

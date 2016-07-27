@@ -33,6 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import static java.lang.String.format;
+import static java.lang.String.format;
+import static java.lang.String.format;
 
 /**
  * Aditional documentation: https://blogs.aws.amazon.com/bigdata/post/Tx3ET30EGDKUUI2/Implementing-Efficient-and-Reliable-Producers-with-the-Amazon-Kinesis-Producer-L
@@ -103,7 +106,7 @@ public class Drone implements CommandLineRunner {
                 zombie.move();
             }
             while (producer.getOutstandingRecordsCount() > NUMBER_OF_ZOMBIES * 3) {
-                log.warn(format("Kinesis is under pressure (count=%s). Waiting 1 second.", 
+                log.warn(format("Kinesis KPL is under pressure (count=%s). Waiting 1 second.", 
                         producer.getOutstandingRecordsCount()));
                 Thread.sleep(1000);
             }
@@ -148,7 +151,7 @@ public class Drone implements CommandLineRunner {
 
     private void initZombies(double latitude, double longitude, double radious) {
         for (int i=0; i < NUMBER_OF_ZOMBIES; i++) {
-            CoordinateUTM utm = Datum.WGS84.latLonToUTM(latitude, longitude, 0);
+            CoordinateUTM utm = Datum.WGS84.latLonToUTM(latitude, longitude, -1);
             double angle = 2 * PI * Math.random();
             double dx = radious * cos(angle);
             double dy = radious * sin(angle);
