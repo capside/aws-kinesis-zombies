@@ -52,7 +52,7 @@
             var socket = new SockJS('/stomp');
             var stompClient = Stomp.over(socket);
             stompClient.debug = function(data) {
-                var msg = data.substring(data.lastIndexOf('\n\n')).trim();
+                var msg = 'Received message.'; // data.substring(data.lastIndexOf('\n\n')).trim();
                 console.log(msg);
             };
             
