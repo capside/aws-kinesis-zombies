@@ -84,8 +84,12 @@ java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1045 ^
      --stream=zombies --region=us-west-2
 ```
 
-After launching both programs you can access the visualization using ```http://localhost:8080```
+After launching both programs you can access the visualization using ```http://localhost:8080```. And for additional fun:
 
+```bash
+java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     --drone=3333 --stream=zombies --region=us-west-2 --latitude=41.3902 --longitude=2.15400
+``` 
 
 
 
