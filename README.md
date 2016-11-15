@@ -91,6 +91,8 @@ java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=41.3902 --longitude=2.15400
 ``` 
 
-
-
+```bash
+java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     --drone=3333 --stream=zombies --region=us-west-2 --latitude=51.509865 --longitude=-0.118092
+``` 
 
