@@ -14,15 +14,13 @@ Kinesis with Zombies
 
 ##Devel credentials
 
-* Generate new credentials with at least access to Kinesis and DynamoDB
-* Create file ```~/.aws/credentials```
-* Add the provided information
-* [Additional information](http://docs.aws.amazon.com/java-sdk/latest/developer-guide/credentials.html)
+* Generate new credentials with at least access to Kinesis, Cloudwatch and DynamoDB
+* Set the permissions as environment variables:
 
 ```
-[default]
-aws_access_key_id = AKIAXX5MHRASSSXXXXXX
-aws_secret_access_key = zh4JXXXadx9HW9kVkpfPix+StNHMXxMW+XXXXXXX
+SET AWS_ACCESS_KEY_ID=<your access key>
+SET AWS_SECRET_ACCESS_KEY=<your secret key>
+SET AWS_DEFAULT_REGION=us-west-2
 ``` 
 
 ##Using the cli to create and check the Kinesis stream
