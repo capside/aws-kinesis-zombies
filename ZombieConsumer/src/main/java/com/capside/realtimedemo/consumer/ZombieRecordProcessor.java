@@ -31,7 +31,7 @@ abstract class ZombieRecordProcessor implements IRecordProcessor {
 
     @Override
     public void initialize(InitializationInput initializationInput) {
-        log.info("Procesando desde el shard {} empezando por la subsecuencia {}.", 
+        log.info("Processing from shard {} beginning with subsequence {}.", 
                  initializationInput.getShardId(), initializationInput.getExtendedSequenceNumber().getSubSequenceNumber());
     }
 
@@ -39,9 +39,9 @@ abstract class ZombieRecordProcessor implements IRecordProcessor {
     @Override
     public void processRecords(ProcessRecordsInput processRecordsInput) {
         List<Record> records = processRecordsInput.getRecords();
-        // Utilizado para actualizar el último registro procesado
+        // Used to update the last processed record
         IRecordProcessorCheckpointer checkpointer = processRecordsInput.getCheckpointer();
-        log.info("Recuperando registros desde kinesis.");
+        log.info("Recovering records from kinesis.");
         for (Record r : records) {
             try {
                 int len = r.getData().remaining();
