@@ -1,7 +1,7 @@
 Kinesis with Zombies
 ========================================================
 
-##We are [Capside](http://twitter.com/capside)
+## We are [Capside](http://twitter.com/capside)
 
 * And we are kinda nice
 
@@ -78,10 +78,11 @@ The next scripts will start the projects allowing you to attach an external debu
 Run them on the folders in which the jar binaries are located.
 *DISCLAIMER*: for optimum performance, of course, run at least the consumer on EC2 instances.
 
+
 ```bash
 java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044 ^
      -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
-     --drone=5555 --stream=zombies --region=us-west-2 --latitude=40.415363 --longitude=-3.707398
+     --drone=5555 --stream=zombies --region=us-west-2 --latitude=51.509865 --longitude=-0.118092
 ```
 ```bash
 java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1045 ^
@@ -91,13 +92,28 @@ java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1045 ^
 
 After launching both programs you can access the visualization using ```http://localhost:8080```. And for additional fun:
 
-```bash
-java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
-     --drone=3333 --stream=zombies --region=us-west-2 --latitude=41.3902 --longitude=2.15400
-``` 
-
+* London
 ```bash
 java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=51.509865 --longitude=-0.118092
 ``` 
-
+* Manchester
+```bash
+java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     --drone=3333 --stream=zombies --region=us-west-2 --latitude=53.4808 --longitude=-2.2426
+``` 
+* Edinburgh
+```bash
+java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     --drone=3333 --stream=zombies --region=us-west-2 --latitude=55.9533 --longitude=-3.1883
+``` 
+* Madrid
+```bash
+java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     --drone=3333 --stream=zombies --region=us-west-2 --latitude=40.415363 --longitude=-3.707398
+``` 
+* Barcelona
+```bash
+java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     --drone=3333 --stream=zombies --region=us-west-2 --latitude=41.3902 --longitude=2.15400
+``` 
