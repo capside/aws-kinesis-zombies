@@ -1,5 +1,8 @@
 package com.capside.realtimedemo.consumer;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.IRecordProcessorFactory;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.InitialPositionInStream;
@@ -21,15 +24,22 @@ public class Consumer {
 
     private final String region;
 
+    private final AWSCredentialsProvider awsCreds;
+    
     private final IRecordProcessorFactory zombieRecordFactory;
 
     @Autowired
     public Consumer(@Value("${stream}") String streamName,
             @Value("${region}") String region,
-            IRecordProcessorFactory zombieRecordFactory) {
+            IRecordProcessorFactory zombieRecordFactory, 
+            @Value("${accesskey}") String accessKey,
+            @Value("${secretKey}") String secretKey) {
         this.streamName = streamName;
         this.region = region;
         this.zombieRecordFactory = zombieRecordFactory;
+        this.awsCreds = accessKey != null ? 
+                        new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)) :
+                        new DefaultAWSCredentialsProviderChain();
         this.initKinesis();
     }
     
@@ -42,7 +52,7 @@ public class Consumer {
                 = new KinesisClientLibConfiguration(
                         "Zombies" /* aplication name */,
                         streamName,
-                        new DefaultAWSCredentialsProviderChain(),
+                        awsCreds,
                         "ZombieConsumer_" + pid /* worker id*/)
                 .withRegionName(region)
                 .withFailoverTimeMillis(1000 * 30) // after 30 seconds this worker is considered ko                        
