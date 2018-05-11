@@ -69,7 +69,7 @@ mvn package
 ## Gotchas
 
 * Remember to delete both the Kinesis Stream *and* the DynamoDB table
-* Kinesis *is* key sensitive with the name of the streams
+* Kinesis *is* key sensitive with the name of the streams   
 * The KCL uses DynamoDB to keep track of the stream. Create alerts to monitor the corresponding table.
 
 ## Running the producer and the consumer
