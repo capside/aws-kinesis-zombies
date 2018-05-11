@@ -64,7 +64,7 @@ mvn package
 ## Getting the binaries
 
 * Use them if you don't want to take a look at the code
-* Download them from the project [releases](https://github.com/capside/aws-kinesis-zombies/releases/tag/0.0.2)
+* Download them from the project [releases](https://github.com/capside/aws-kinesis-zombies/releases/tag/0.0.3)
 
 ## Gotchas
 
@@ -81,12 +81,12 @@ Run them on the folders in which the jar binaries are located.
 
 ```bash
 java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044 ^
-     -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+     -jar ZombieProducer-0.0.3-SNAPSHOT.jar ^
      --drone=5555 --stream=zombies --region=us-west-2 --latitude=51.509865 --longitude=-0.118092
 ```
 ```bash
 java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1045 ^
-     -jar ZombieConsumer-0.0.2-SNAPSHOT.jar ^
+     -jar ZombieConsumer-0.0.3-SNAPSHOT.jar ^
      --stream=zombies --region=us-west-2
 ```
 
@@ -94,26 +94,26 @@ After launching both programs you can access the visualization using ```http://l
 
 * London
 ```bash
-java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+java -jar ZombieProducer-0.0.3-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=51.509865 --longitude=-0.118092
 ``` 
 * Manchester
 ```bash
-java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+java -jar ZombieProducer-0.0.3-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=53.4808 --longitude=-2.2426
 ``` 
 * Edinburgh
 ```bash
-java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+java -jar ZombieProducer-0.0.3-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=55.9533 --longitude=-3.1883
 ``` 
 * Madrid
 ```bash
-java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+java -jar ZombieProducer-0.0.3-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=40.415363 --longitude=-3.707398
 ``` 
 * Barcelona
 ```bash
-java -jar ZombieProducer-0.0.2-SNAPSHOT.jar ^
+java -jar ZombieProducer-0.0.3-SNAPSHOT.jar ^
      --drone=3333 --stream=zombies --region=us-west-2 --latitude=41.3902 --longitude=2.15400
 ``` 
