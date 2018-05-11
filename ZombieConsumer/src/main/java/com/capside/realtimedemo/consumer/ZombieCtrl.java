@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @Slf4j
-public class ZombieCtrl {
+public class ZombieCtrl { 
 
     private final ZombieRecordProcessorFactoryOnMemory lectureSource;
 
