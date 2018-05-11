@@ -16,11 +16,13 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"droneId", "zombieId"}) @ToString
 public class ZombieLecture {
     
-    @JsonProperty("drone-id")
+    @JsonProperty("drone_id")
     private long droneId;
+    @JsonProperty("zombie_id")
     private String zombieId;
     private Date timestamp = new Date();
     private double latitude;
     private double longitude;
+    private String utm;
 }
 
