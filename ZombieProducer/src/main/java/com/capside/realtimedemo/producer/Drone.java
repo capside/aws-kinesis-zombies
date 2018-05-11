@@ -3,6 +3,9 @@
  */
 package com.capside.realtimedemo.producer;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,9 +36,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import static java.lang.String.format;
+import java.nio.charset.Charset;
 
 /**
- * Aditional documentation: https://blogs.aws.amazon.com/bigdata/post/Tx3ET30EGDKUUI2/Implementing-Efficient-and-Reliable-Producers-with-the-Amazon-Kinesis-Producer-L
+ * Additional documentation: https://blogs.aws.amazon.com/bigdata/post/Tx3ET30EGDKUUI2/Implementing-Efficient-and-Reliable-Producers-with-the-Amazon-Kinesis-Producer-L
  * 
  * @author ciberado
  */
@@ -57,6 +61,7 @@ public class Drone implements CommandLineRunner {
     private final  int id;
     private final double latitude;
     private final double longitude;
+    private final AWSCredentialsProvider awsCreds;
     private final List<Zombie> zombies = new ArrayList<>();
     
     private final RecordSentCallback recordSentCallback;
@@ -77,7 +82,9 @@ public class Drone implements CommandLineRunner {
             @Value("${stream}") String streamName,
             @Value("${region}") String region,
             @Value("${latitude}") double latitude,
-            @Value("${longitude}") double longitude) {
+            @Value("${longitude}") double longitude, 
+            @Value("${accesskey}") String accessKey,
+            @Value("${secretKey}") String secretKey) {
         // --drone=7777 --stream=zombies --region=us-west-2 --latitude=41.3902 --longitude=2.15400
         // --drone=5555 --stream=zombies --region=us-west-2 --latitude=40.415363 --longitude=-3.707398
         this.mapper = new ObjectMapper();
@@ -89,6 +96,10 @@ public class Drone implements CommandLineRunner {
         this.currentRecordNumber = new AtomicLong(0);
         this.recordsCompleted = new AtomicLong(0);
         this.recordSentCallback  = new RecordSentCallback();
+        
+        this.awsCreds = accessKey != null ? 
+                        new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)) :
+                        new DefaultAWSCredentialsProviderChain();
     }
 
     @SneakyThrows
@@ -98,9 +109,7 @@ public class Drone implements CommandLineRunner {
         createKinesisProducer();
         while (true) {
             long t0 = System.currentTimeMillis();
-            for (Zombie zombie : zombies) {
-                zombie.move();
-            }
+            zombies.forEach((zombie) -> zombie.move());
             while (producer.getOutstandingRecordsCount() > MAX_OUTSTANDING) {
                 log.warn(format("Kinesis KPL is under pressure (count=%s). Waiting 1 second.", 
                         producer.getOutstandingRecordsCount()));
@@ -124,7 +133,7 @@ public class Drone implements CommandLineRunner {
         KinesisProducerConfiguration config = new KinesisProducerConfiguration();
 
         config.setRegion(region);
-        config.setCredentialsProvider(new DefaultAWSCredentialsProviderChain());
+        config.setCredentialsProvider(awsCreds);
         config.setMaxConnections(24);           // Raise it if you have expired records
         config.setRequestTimeout(60000);        
         config.setAggregationEnabled(true); 
@@ -198,11 +207,11 @@ public class Drone implements CommandLineRunner {
     public void putNewRecord(Zombie zombie) {        
         CoordinateUTM utm = zombie.getCurrentPosition();
         CoordinateLatLon latLon = Datum.WGS84.utmToLatLon(utm);
-        ZombieLecture lect = new ZombieLecture(id, zombie.getId(), new Date(), latLon.getLat(), latLon.getLon());
         utm.setAccuracy(RADIOUS);
         String partitionKey = utm.getShortForm();
+        ZombieLecture lect = new ZombieLecture(id, zombie.getId(), new Date(), latLon.getLat(), latLon.getLon(), partitionKey);
         String json = mapper.writeValueAsString(lect);
-        ByteBuffer data = ByteBuffer.wrap(json.getBytes("UTF-8"));
+        ByteBuffer data = Charset.forName("UTF-8").encode(json);
         ListenableFuture<UserRecordResult> f
                 = producer.addUserRecord(streamName, partitionKey, data);
         Futures.addCallback(f, this.recordSentCallback);
